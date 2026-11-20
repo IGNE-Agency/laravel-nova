@@ -26,6 +26,11 @@ final class User extends NovaResource
     public static $title = 'name';
 
     /**
+     * @var string
+     */
+    public static $group = 'users';
+
+    /**
      * @return array<int, mixed>
      */
     public function fields(NovaRequest $request): array
