@@ -6,6 +6,12 @@ The [Laravel Nova](https://nova.laravel.com) features every IGNE project needs, 
 
 Every Nova project rebuilt the same pieces, each slightly differently: a grouped sidebar, a Dutch translation of Nova, brand colours converted to RGB by hand, a guard against sort links that crash the index, enum badges and period filters. This package is those pieces once, tested, and the same in every project.
 
+## Features
+
+| Feature | Default | Turn it on or off |
+|---|---|---|
+| Main menu grouped by your group enum, with cached badges | Off | Call `GroupedMenu` from `Nova::mainMenu()`; see [Main menu](docs/menu.md). |
+
 ## Requirements
 
 - PHP 8.4
@@ -26,4 +32,5 @@ php artisan vendor:publish --tag=igne-nova-config
 
 ## Documentation
 
+- [Main menu](docs/menu.md)
 - [Development](docs/development.md)
