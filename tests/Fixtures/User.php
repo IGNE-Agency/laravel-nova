@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Igne\Nova\Tests\Fixtures;
 
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -14,12 +15,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null $locale
  * @property string|null $timezone
  */
-final class User extends Authenticatable
+final class User extends Authenticatable implements HasLocalePreference
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
     protected $guarded = [];
+
+    public function preferredLocale(): ?string
+    {
+        return $this->locale;
+    }
 
     protected static function newFactory(): UserFactory
     {
