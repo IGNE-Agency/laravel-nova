@@ -17,6 +17,8 @@ Every Nova project rebuilt the same pieces, each slightly differently: a grouped
 | The app's own Nova stylesheets and scripts | Off | `assets`; see [Panel defaults](docs/panel.md#assets). |
 | Ignore sorts on unknown columns instead of a SQL error | Off | `IgnoresUnknownSortColumns` on the base resource; see [Resource helpers](docs/resources.md). |
 | Resource labels from translations keyed by URI key | Off | `TranslatesLabels` on the base resource; see [Resource helpers](docs/resources.md). |
+| Badge field driven by an enum's labels and colours | Off | `EnumBadge::make()`; see [Fields and filters](docs/fields-and-filters.md). |
+| Filter on a timestamp within the last days | Off | `new CreatedWithin`; see [Fields and filters](docs/fields-and-filters.md#createdwithin). |
 
 ## Requirements
 
@@ -43,4 +45,5 @@ php artisan vendor:publish --tag=igne-nova-lang
 - [Panel defaults](docs/panel.md)
 - [Branding](docs/branding.md)
 - [Resource helpers](docs/resources.md)
+- [Fields and filters](docs/fields-and-filters.md)
 - [Development](docs/development.md)
