@@ -15,6 +15,8 @@ Every Nova project rebuilt the same pieces, each slightly differently: a grouped
 | The user's preferred locale and timezone | On | Laravel's `HasLocalePreference` and `IgneNova::resolveTimezoneUsing()`; see [Panel defaults](docs/panel.md). |
 | Logo and brand colour from one hex colour or a full scale | Off | `brand`; see [Branding](docs/branding.md). |
 | The app's own Nova stylesheets and scripts | Off | `assets`; see [Panel defaults](docs/panel.md#assets). |
+| Ignore sorts on unknown columns instead of a SQL error | Off | `IgnoresUnknownSortColumns` on the base resource; see [Resource helpers](docs/resources.md). |
+| Resource labels from translations keyed by URI key | Off | `TranslatesLabels` on the base resource; see [Resource helpers](docs/resources.md). |
 
 ## Requirements
 
@@ -40,4 +42,5 @@ php artisan vendor:publish --tag=igne-nova-lang
 - [Main menu](docs/menu.md)
 - [Panel defaults](docs/panel.md)
 - [Branding](docs/branding.md)
+- [Resource helpers](docs/resources.md)
 - [Development](docs/development.md)
