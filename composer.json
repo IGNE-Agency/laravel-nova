@@ -1,0 +1,70 @@
+{
+    "name": "igne-agency/laravel-nova",
+    "description": "Reusable Laravel Nova 5 features for IGNE projects: a grouped main menu, panel defaults, branding, resource helpers, enum badges, filters, Dutch translations and a custom 403 page.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "nova"
+    ],
+    "authors": [
+        {
+            "name": "Rick Blanksma",
+            "email": "rick@igne.nl"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "illuminate/cache": "^13.0",
+        "illuminate/contracts": "^13.0",
+        "illuminate/database": "^13.0",
+        "illuminate/http": "^13.0",
+        "illuminate/support": "^13.0",
+        "illuminate/translation": "^13.0",
+        "laravel/nova": "^5.11"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.9",
+        "laravel/pint": "^1.20",
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^5.3",
+        "pestphp/pest-plugin-laravel": "^5.0"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://nova.laravel.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Igne\\Nova\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Igne\\Nova\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Igne\\Nova\\IgneNovaServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "lint": "pint",
+        "analyse": "phpstan analyse --memory-limit=1G",
+        "test": "pest"
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

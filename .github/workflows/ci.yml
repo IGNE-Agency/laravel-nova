@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    name: PHP 8.4 (${{ matrix.dependencies }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        dependencies: [prefer-lowest, prefer-stable]
+
+    steps:
+      # Nova is paid and the package requires it: every check needs the
+      # COMPOSER_AUTH secret, and the job passes without checking anything
+      # where the secret is not available.
+      - name: Check for Nova credentials
+        id: nova-credentials
+        env:
+          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
+        run: |
+          if [ -n "$COMPOSER_AUTH" ]; then
+            echo "has_auth=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_auth=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::The COMPOSER_AUTH secret is not set, so Nova cannot be installed and the checks are skipped."
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.nova-credentials.outputs.has_auth == 'true'
+
+      - uses: shivammathur/setup-php@v2
+        if: steps.nova-credentials.outputs.has_auth == 'true'
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: Install dependencies
+        if: steps.nova-credentials.outputs.has_auth == 'true'
+        env:
+          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
+        run: composer update --${{ matrix.dependencies }} --prefer-dist --no-interaction
+
+      - name: Pint
+        if: steps.nova-credentials.outputs.has_auth == 'true'
+        run: vendor/bin/pint --test
+
+      - name: Larastan
+        if: steps.nova-credentials.outputs.has_auth == 'true'
+        run: composer analyse
+
+      - name: Pest
+        if: steps.nova-credentials.outputs.has_auth == 'true'
+        run: composer test
