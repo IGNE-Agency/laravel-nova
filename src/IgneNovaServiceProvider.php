@@ -8,6 +8,7 @@ use Igne\Nova\Branding\BrandColors;
 use Igne\Nova\Panel\ApplyUserLocale;
 use Igne\Nova\Panel\Assets;
 use Igne\Nova\Panel\Footer;
+use Igne\Nova\Panel\LoadNovaTranslations;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\Request;
@@ -29,12 +30,18 @@ final class IgneNovaServiceProvider extends ServiceProvider
 
         // Registered before Nova's own serving listener, which Nova registers
         // in boot(): that one loads the translations of the locale set here.
-        $this->app->make(Dispatcher::class)->listen(ServingNova::class, ApplyUserLocale::class);
+        $events = $this->app->make(Dispatcher::class);
+        $events->listen(ServingNova::class, ApplyUserLocale::class);
+        $events->listen(ServingNova::class, function (ServingNova $event): void {
+            (new LoadNovaTranslations($this->path('lang/nova')))->handle($event);
+        });
     }
 
     public function boot(): void
     {
         $this->loadTranslationsFrom($this->path('lang'), 'igne-nova');
+        // Nova's server-side texts, such as action and validation messages.
+        $this->loadJsonTranslationsFrom($this->path('lang/nova'));
 
         $config = $this->app->make(Config::class);
 
@@ -91,6 +98,8 @@ final class IgneNovaServiceProvider extends ServiceProvider
         $styles = $config->array('igne-nova.assets.styles', []);
         /** @var array<string, string> $scripts */
         $scripts = $config->array('igne-nova.assets.scripts', []);
+
+        $scripts = ['igne-nova-error-403' => $this->path('resources/js/error-403.js'), ...$scripts];
 
         if ($config->boolean('igne-nova.lazy_images')) {
             $scripts = ['igne-nova-lazy-images' => $this->path('resources/js/lazy-images.js'), ...$scripts];
