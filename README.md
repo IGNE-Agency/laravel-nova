@@ -19,6 +19,8 @@ Every Nova project rebuilt the same pieces, each slightly differently: a grouped
 | Resource labels from translations keyed by URI key | Off | `TranslatesLabels` on the base resource; see [Resource helpers](docs/resources.md). |
 | Badge field driven by an enum's labels and colours | Off | `EnumBadge::make()`; see [Fields and filters](docs/fields-and-filters.md). |
 | Filter on a timestamp within the last days | Off | `new CreatedWithin`; see [Fields and filters](docs/fields-and-filters.md#createdwithin). |
+| Nova in Dutch, overridable per key by the app | On | The app's `lang/vendor/nova/nl.json` wins; see [Translations](docs/translations.md). |
+| A 403 page with "Go back" and "Log out" | On | See [Error pages](docs/error-pages.md). |
 
 ## Requirements
 
@@ -46,4 +48,6 @@ php artisan vendor:publish --tag=igne-nova-lang
 - [Branding](docs/branding.md)
 - [Resource helpers](docs/resources.md)
 - [Fields and filters](docs/fields-and-filters.md)
+- [Translations](docs/translations.md)
+- [Error pages](docs/error-pages.md)
 - [Development](docs/development.md)

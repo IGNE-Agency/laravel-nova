@@ -45,6 +45,7 @@ abstract class TestCase extends Orchestra
     protected function tearDown(): void
     {
         Nova::flushState();
+        Nova::$translations = [];
         IgneNova::flushState();
 
         parent::tearDown();
