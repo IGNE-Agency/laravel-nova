@@ -73,5 +73,5 @@
 - Checks: `composer lint` (Pint), `composer analyse` (Larastan, level max on `src`, no baseline) and `composer test` (Pest on Orchestra Testbench with Nova). Done means all three pass.
 - Tests are Pest only.
 - Nova is a hard requirement, so the code needs no guard for a missing Nova. Every feature is opt-in or can be turned off per project, and the app's own Nova setup always wins over the package's defaults.
-- JavaScript ships as plain files in `resources/js`, registered with `Nova::script()`; there is no build step. They use the `Vue` and `Nova` globals Nova provides.
+- Vue components are `.vue` files in `resources/js`, built with Nova's own setup (`laravel/nova-devtool`, Laravel Mix, `npm run prod`) into `dist/`, which is committed so apps need no build. Run the build after changing them and commit `dist/` with the change. Small scripts without components stay plain files in `resources/js`. Both are registered with `Nova::script()` and use the `Vue` and `Nova` globals Nova provides; never import `vue`, `vuex` or Nova's own modules into a bundle beyond what the Nova build keeps external.
 - Versioning is 0.x until a second project runs the package: a breaking change bumps the minor version.

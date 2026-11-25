@@ -46,6 +46,8 @@ it('translates Nova\'s server-side texts', function (): void {
     expect(__('Go back'))->toBe(packageTranslations('nl')['Go back']);
 });
 
-it('registers the 403 page', function (): void {
-    expect(array_map(static fn ($script): string => $script->name(), Nova::$scripts))->toContain('igne-nova-error-403');
+it('registers the built 403 page', function (): void {
+    $errorPage = collect(Nova::$scripts)->first(static fn ($script): bool => $script->name() === 'igne-nova-error-403');
+
+    expect($errorPage?->path())->toEndWith('/dist/js/error-403.js')->toBeFile();
 });
