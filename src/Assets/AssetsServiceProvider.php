@@ -22,10 +22,10 @@ final class AssetsServiceProvider extends ServiceProvider
         /** @var array<string, string> $scripts */
         $scripts = $config->array('igne-nova.assets.scripts', []);
 
-        $scripts = ['igne-nova-error-403' => $this->script('error-403.js'), ...$scripts];
+        $scripts = ['igne-nova-error-403' => $this->path('dist/js/error-403.js'), ...$scripts];
 
         if ($config->boolean('igne-nova.assets.lazy_images')) {
-            $scripts = ['igne-nova-lazy-images' => $this->script('lazy-images.js'), ...$scripts];
+            $scripts = ['igne-nova-lazy-images' => $this->path('resources/js/lazy-images.js'), ...$scripts];
         }
 
         foreach ($styles as $name => $path) {
@@ -37,9 +37,9 @@ final class AssetsServiceProvider extends ServiceProvider
         }
     }
 
-    private function script(string $file): string
+    private function path(string $path): string
     {
-        return \dirname(__DIR__, 2).'/resources/js/'.$file;
+        return \dirname(__DIR__, 2).'/'.$path;
     }
 
     private function existing(string $path): string
