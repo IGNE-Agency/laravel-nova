@@ -9,6 +9,7 @@ use Igne\Nova\Branding\BrandingServiceProvider;
 use Igne\Nova\Layout\LayoutServiceProvider;
 use Igne\Nova\Localization\LocalizationServiceProvider;
 use Igne\Nova\Menu\MenuServiceProvider;
+use Igne\Nova\Routes\RoutesServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -32,6 +33,7 @@ final class IgneNovaServiceProvider extends ServiceProvider
         LocalizationServiceProvider::class,
         BrandingServiceProvider::class,
         AssetsServiceProvider::class,
+        RoutesServiceProvider::class,
     ];
 
     public function register(): void

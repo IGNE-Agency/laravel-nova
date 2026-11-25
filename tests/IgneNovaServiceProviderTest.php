@@ -8,6 +8,7 @@ use Igne\Nova\Layout\LayoutServiceProvider;
 use Igne\Nova\Localization\LocalizationServiceProvider;
 use Igne\Nova\Menu\MenuServiceProvider;
 use Igne\Nova\PackageServiceProvider;
+use Igne\Nova\Routes\RoutesServiceProvider;
 use Igne\Nova\Tests\Fixtures\User;
 
 it('registers the package\'s providers', function (string $provider): void {
@@ -19,6 +20,7 @@ it('registers the package\'s providers', function (string $provider): void {
     LocalizationServiceProvider::class,
     BrandingServiceProvider::class,
     AssetsServiceProvider::class,
+    RoutesServiceProvider::class,
 ]);
 
 it('merges the package config', function (): void {
