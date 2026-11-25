@@ -6,8 +6,9 @@ namespace Igne\Nova\Tests\Fixtures\Enums;
 
 use Igne\Nova\BadgeType;
 use Igne\Nova\Fields\Contracts\BadgeEnum;
+use Igne\Nova\Fields\Contracts\HasBadgeType;
 
-enum Status: string implements BadgeEnum
+enum Status: string implements BadgeEnum, HasBadgeType
 {
     case OPEN = 'open';
     case CLOSED = 'closed';

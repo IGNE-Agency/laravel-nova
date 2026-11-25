@@ -4,21 +4,35 @@
 
 `Igne\Nova\Fields\EnumBadge` is Nova's Badge field for an enum attribute. The enum gives every case its label and colour, so no case can be missing from the mapping, which makes Nova's Badge throw when the page renders.
 
-The enum implements `Igne\Nova\Fields\Contracts\BadgeEnum`:
+```php
+EnumBadge::make(__('Status'), 'status', InvitationStatus::class),
+```
+
+The attribute can also be a callable; it returns the case's value.
+
+### Options
+
+The enum implements `Igne\Nova\Fields\Contracts\BadgeEnum`, which only asks for a label. Every other option is an interface on the enum; leave it out and its default applies.
+
+| Option | Add to the enum | Without it |
+|--------|-----------------|------------|
+| Label | `BadgeEnum`, `label()` (required) | — |
+| Label from the translations | `use TranslatesBadgeLabel;` instead of writing `label()` | — |
+| One of Nova's colours per case | `HasBadgeType`, `badgeType()` returns a `BadgeType` | Every case in the info colour |
+| Own CSS classes per case | `HasBadgeClasses`, `badgeClasses()`; wins over `HasBadgeType` | Nova's colours |
 
 ```php
 use Igne\Nova\BadgeType;
+use Igne\Nova\Fields\Concerns\TranslatesBadgeLabel;
 use Igne\Nova\Fields\Contracts\BadgeEnum;
+use Igne\Nova\Fields\Contracts\HasBadgeType;
 
-enum InvitationStatus: string implements BadgeEnum
+enum InvitationStatus: string implements BadgeEnum, HasBadgeType
 {
+    use TranslatesBadgeLabel;
+
     case PENDING = 'pending';
     case ACCEPTED = 'accepted';
-
-    public function label(): string
-    {
-        return __("invitations.status.{$this->value}");
-    }
 
     public function badgeType(): BadgeType
     {
@@ -30,13 +44,20 @@ enum InvitationStatus: string implements BadgeEnum
 }
 ```
 
+`TranslatesBadgeLabel` reads the key `enums.{enum in snake case}.{value}`, here `enums.invitation_status.pending`, so the app's `lang/en/enums.php` holds:
+
 ```php
-EnumBadge::make(__('Status'), 'status', InvitationStatus::class),
+return [
+    'invitation_status' => [
+        'pending' => 'Pending',
+        'accepted' => 'Accepted',
+    ],
+];
 ```
 
-The attribute can also be a callable; it returns the case's value. An empty value shows "Unknown" in the info colour, so the badge can back a nullable column, and the field's filter lists every case and "Unknown".
+`label()` has the same signature as `HasLabel` in igne-agency/laravel-permissions, so a role or space enum can implement both.
 
-For brand colours instead of Nova's four, also implement `Igne\Nova\Fields\Contracts\HasBadgeClasses`; its classes win over the badge type:
+For brand colours instead of Nova's four, `badgeClasses()` returns the classes:
 
 ```php
 public function badgeClasses(): string
@@ -46,6 +67,12 @@ public function badgeClasses(): string
 ```
 
 Load the CSS for such classes with the package's [assets](panel.md#assets).
+
+### Empty and unknown values
+
+An empty value shows "Unknown" in the info colour, so the badge can back a nullable column, and the field's filter lists every case and "Unknown".
+
+A value that is not a case, such as a row still holding a case the enum has since dropped, throws an `EnumBadgeException` that names the enum and its cases. Add the case back or migrate those rows. An enum that does not implement `BadgeEnum` throws the same exception when the field is made.
 
 ## CreatedWithin
 
