@@ -82,6 +82,7 @@ abstract class TestCase extends Orchestra
                 'foreign_key_constraints' => true,
             ]);
             $config->set('hashing.bcrypt.rounds', 4);
+            $config->set('igne-nova.menu.discover', [__DIR__.'/Fixtures/Menu']);
             $config->set('session.driver', 'array');
         });
     }

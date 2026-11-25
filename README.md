@@ -10,7 +10,7 @@ Every Nova project rebuilt the same pieces, each slightly differently: a grouped
 
 | Feature | Default | Turn it on or off |
 |---|---|---|
-| Main menu grouped by your group enum, with cached badges | Off | Call `GroupedMenu` from `Nova::mainMenu()`; see [Main menu](docs/menu.md). |
+| Main menu grouped by your `NovaMenuGroup` enum, with cached badges | Off | Call `GroupedMenu` from `Nova::mainMenu()`; see [Main menu](docs/menu.md). |
 
 ## Requirements
 

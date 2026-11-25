@@ -11,12 +11,12 @@ Nova keeps one main menu callback, so the app owns it and calls the builder from
 
 ## Set it up
 
-Create a string-backed enum that implements `Igne\Nova\Menu\Contracts\MenuGroup`. The order of its cases is the order of the sections; resources without a group, or with a group the enum doesn't know, are listed in the `fallback()` group.
+Create a string-backed enum anywhere in `app/` that implements `Igne\Nova\Menu\Contracts\NovaMenuGroup`. The package finds it on its own. The order of its cases is the order of the sections; resources without a group, or with a group the enum doesn't know, are listed in the `fallback()` group.
 
 ```php
-use Igne\Nova\Menu\Contracts\MenuGroup;
+use Igne\Nova\Menu\Contracts\NovaMenuGroup;
 
-enum NovaGroup: string implements MenuGroup
+enum NovaGroup: string implements NovaMenuGroup
 {
     case USERS = 'users';
     case CONTENT = 'content';
@@ -43,20 +43,42 @@ enum NovaGroup: string implements MenuGroup
 }
 ```
 
-Put each resource in a group with Nova's own property:
+Put a resource in a group by implementing `Igne\Nova\Menu\Contracts\HasMenuGroup`:
 
 ```php
-public static $group = NovaGroup::USERS->value;
+use Igne\Nova\Menu\Contracts\HasMenuGroup;
+use Igne\Nova\Menu\Contracts\NovaMenuGroup;
+
+final class User extends Resource implements HasMenuGroup
+{
+    public static function menuGroup(): NovaMenuGroup
+    {
+        return NovaGroup::USERS;
+    }
+}
 ```
+
+`menuGroup()` must return a case of the menu's enum; a case of another enum throws a `MenuGroupException`. A resource you can't change, such as one from another package, can still join a group with Nova's own `public static $group = 'users';`, matched against the enum's values.
 
 Build the menu in your `NovaServiceProvider::boot()`:
 
 ```php
 use Igne\Nova\Menu\GroupedMenu;
 
-Nova::mainMenu(fn (Request $request): array => GroupedMenu::make($request, NovaGroup::class)
+Nova::mainMenu(fn (Request $request): array => GroupedMenu::make($request)
     ->append(MenuSection::make(__('Settings'), [MenuItem::link(__('General'), '/settings')])->icon('cog'))
     ->sections());
+```
+
+### How the enum is found
+
+The package scans the `igne-nova.menu.discover` folders (`app/` by default) for an enum that implements `NovaMenuGroup`. It loads only the files that mention `NovaMenuGroup` and keeps the result for the rest of the process. It throws a `MenuGroupException` when it finds none or more than one. In either case, or when the enum lives outside `app/`, name it in the config, which skips the scan:
+
+```php
+// config/igne-nova.php
+'menu' => [
+    'groups' => \App\Nova\NovaGroup::class,
+],
 ```
 
 | Method | Does |
