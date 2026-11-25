@@ -4,37 +4,40 @@ declare(strict_types=1);
 
 namespace Igne\Nova;
 
+use Igne\Nova\Assets\AssetsServiceProvider;
+use Igne\Nova\Branding\BrandingServiceProvider;
+use Igne\Nova\Layout\LayoutServiceProvider;
+use Igne\Nova\Localization\LocalizationServiceProvider;
+use Igne\Nova\Menu\MenuServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * Wires the package's Nova features into the app. Every feature is opt-in per
- * project through config/igne-nova.php, a trait or a class the app calls.
+ * Builds the package from its providers: one for the package itself and one
+ * per feature. Every feature is opt-in per project or can be turned off in
+ * config/igne-nova.php, and the app's own Nova setup wins: its providers boot
+ * after these, so its Nova::footer() and such replace the package's, and its
+ * config/nova.php brand settings stay.
  */
 final class IgneNovaServiceProvider extends ServiceProvider
 {
+    /**
+     * In this order: the package's config is merged before the features read it.
+     *
+     * @var list<class-string<ServiceProvider>>
+     */
+    private const array PROVIDERS = [
+        PackageServiceProvider::class,
+        MenuServiceProvider::class,
+        LayoutServiceProvider::class,
+        LocalizationServiceProvider::class,
+        BrandingServiceProvider::class,
+        AssetsServiceProvider::class,
+    ];
+
     public function register(): void
     {
-        $this->mergeConfigFrom($this->path('config/igne-nova.php'), 'igne-nova');
-    }
-
-    public function boot(): void
-    {
-        $this->configurePublishing();
-    }
-
-    private function configurePublishing(): void
-    {
-        if (! $this->app->runningInConsole()) {
-            return;
+        foreach (self::PROVIDERS as $provider) {
+            $this->app->register($provider);
         }
-
-        $this->publishes([
-            $this->path('config/igne-nova.php') => config_path('igne-nova.php'),
-        ], 'igne-nova-config');
-    }
-
-    private function path(string $path): string
-    {
-        return \dirname(__DIR__).'/'.$path;
     }
 }
