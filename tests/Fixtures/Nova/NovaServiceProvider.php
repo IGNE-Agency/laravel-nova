@@ -39,6 +39,6 @@ final class NovaServiceProvider extends NovaApplicationServiceProvider
 
     protected function resources(): void
     {
-        Nova::resources([User::class]);
+        Nova::resources([Article::class, Invitation::class, Note::class, Setting::class, User::class]);
     }
 }

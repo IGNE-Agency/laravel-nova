@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace Igne\Nova\Tests;
 
+use Closure;
 use Igne\Nova\IgneNovaServiceProvider;
+use Igne\Nova\Menu\GroupedMenu;
 use Igne\Nova\Tests\Fixtures\Nova\NovaServiceProvider;
 use Igne\Nova\Tests\Fixtures\User;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Inertia\ServiceProvider as InertiaServiceProvider;
+use Laravel\Nova\Events\ServingNova;
+use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaCoreServiceProvider;
 use Laravel\Nova\Testing\Concerns\InteractsWithNova;
@@ -31,6 +35,17 @@ abstract class TestCase extends Orchestra
 
         // Nova's assets are not built in the package, so the layout renders without them.
         $this->withoutMix();
+    }
+
+    /**
+     * Nova keeps its registrations in static properties, which outlive the
+     * test's app. Only Octane flushes them in a real app.
+     */
+    protected function tearDown(): void
+    {
+        Nova::flushState();
+
+        parent::tearDown();
     }
 
     /**
@@ -67,6 +82,7 @@ abstract class TestCase extends Orchestra
                 'foreign_key_constraints' => true,
             ]);
             $config->set('hashing.bcrypt.rounds', 4);
+            $config->set('igne-nova.menu.discover', [__DIR__.'/Fixtures/Menu']);
             $config->set('session.driver', 'array');
         });
     }
@@ -75,5 +91,24 @@ abstract class TestCase extends Orchestra
     {
         $this->loadLaravelMigrations();
         $this->loadMigrationsFrom(\dirname((string) (new ReflectionClass(Nova::class))->getFileName(), 2).'/database/migrations');
+    }
+
+    /**
+     * Serve Nova to the user and build the menu as Nova serializes it for the page.
+     *
+     * @param  Closure(NovaRequest): GroupedMenu  $build
+     * @return list<array<string, mixed>>
+     */
+    protected function serializedMenu(Closure $build, ?User $user = null): array
+    {
+        $user ??= User::factory()->create();
+        $request = NovaRequest::create('/nova');
+        $request->setUserResolver(static fn (): User => $user);
+        $this->app->instance(NovaRequest::class, $request);
+        $this->actingAs($user);
+        event(new ServingNova($this->app, $request));
+
+        /** @var list<array<string, mixed>> */
+        return json_decode((string) json_encode($build($request)->sections()), true);
     }
 }

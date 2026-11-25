@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Igne\Nova;
 
+use Igne\Nova\Menu\MenuGroupDiscovery;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -15,6 +16,7 @@ final class IgneNovaServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom($this->path('config/igne-nova.php'), 'igne-nova');
+        $this->app->singleton(MenuGroupDiscovery::class);
     }
 
     public function boot(): void
