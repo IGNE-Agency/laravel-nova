@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Igne\Nova\Panel;
+namespace Igne\Nova\Localization;
 
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Laravel\Nova\Events\ServingNova;

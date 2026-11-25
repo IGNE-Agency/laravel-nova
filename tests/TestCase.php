@@ -85,6 +85,7 @@ abstract class TestCase extends Orchestra
                 'foreign_key_constraints' => true,
             ]);
             $config->set('hashing.bcrypt.rounds', 4);
+            $config->set('igne-nova.menu.discover', [__DIR__.'/Fixtures/Menu']);
             $config->set('session.driver', 'array');
         });
     }
@@ -110,15 +111,19 @@ abstract class TestCase extends Orchestra
     }
 
     /**
-     * Boot the package again, after the test changed its config.
+     * Boot one of the package's providers again, after the test changed its config.
+     *
+     * @param  class-string<ServiceProvider>  $provider
      */
-    protected function rebootPackage(): void
+    protected function rebootProvider(string $provider): void
     {
-        $provider = $this->app->getProvider(IgneNovaServiceProvider::class);
+        $instance = $this->app->getProvider($provider);
 
-        if ($provider instanceof IgneNovaServiceProvider) {
-            $provider->boot();
+        if ($instance === null) {
+            throw new \LogicException(\sprintf('The provider [%s] is not registered.', $provider));
         }
+
+        $this->app->call([$instance, 'boot']);
     }
 
     /**

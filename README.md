@@ -10,11 +10,12 @@ Every Nova project rebuilt the same pieces, each slightly differently: a grouped
 
 | Feature | Default | Turn it on or off |
 |---|---|---|
-| Main menu grouped by your group enum, with cached badges | Off | Call `GroupedMenu` from `Nova::mainMenu()`; see [Main menu](docs/menu.md). |
-| Breadcrumbs, initial path, IGNE footer, lazy images | On | `breadcrumbs`, `initial_path`, `footer`, `lazy_images`; see [Panel defaults](docs/panel.md). |
-| The user's preferred locale and timezone | On | Laravel's `HasLocalePreference` and `IgneNova::resolveTimezoneUsing()`; see [Panel defaults](docs/panel.md). |
+| Main menu grouped by your `NovaMenuGroup` enum, with cached badges | Off | Call `GroupedMenu` from `Nova::mainMenu()`; see [Main menu](docs/menu.md). |
+| Breadcrumbs, initial path and the IGNE footer | On | `layout`; see [Layout](docs/layout.md). |
+| The user's preferred locale and timezone | On | Laravel's `HasLocalePreference` and `IgneNova::resolveTimezoneUsing()`; see [Localization](docs/localization.md). |
 | Logo and brand colour from one hex colour or a full scale | Off | `brand`; see [Branding](docs/branding.md). |
-| The app's own Nova stylesheets and scripts | Off | `assets`; see [Panel defaults](docs/panel.md#assets). |
+| The app's own Nova stylesheets and scripts | Off | `assets.styles`, `assets.scripts`; see [Assets](docs/assets.md). |
+| Lazy loading of the images Nova renders | On | `assets.lazy_images`; see [Assets](docs/assets.md). |
 | Ignore sorts on unknown columns instead of a SQL error | Off | `IgnoresUnknownSortColumns` on the base resource; see [Resource helpers](docs/resources.md). |
 | Resource labels from translations keyed by URI key | Off | `TranslatesLabels` on the base resource; see [Resource helpers](docs/resources.md). |
 | Badge field driven by an enum's labels and colours | Off | `EnumBadge::make()`; see [Fields and filters](docs/fields-and-filters.md). |
@@ -44,7 +45,9 @@ php artisan vendor:publish --tag=igne-nova-lang
 ## Documentation
 
 - [Main menu](docs/menu.md)
-- [Panel defaults](docs/panel.md)
+- [Layout](docs/layout.md)
+- [Localization](docs/localization.md)
+- [Assets](docs/assets.md)
 - [Branding](docs/branding.md)
 - [Resource helpers](docs/resources.md)
 - [Fields and filters](docs/fields-and-filters.md)

@@ -13,7 +13,8 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource as NovaResource;
 
 /**
- * A resource with a menu badge, which the tests set.
+ * A resource with a menu badge, which the tests set. It joins its group with Nova's string
+ * $group, as a resource of another package does.
  *
  * @extends NovaResource<UserModel>
  */

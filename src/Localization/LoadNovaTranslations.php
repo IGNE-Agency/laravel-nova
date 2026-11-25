@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Igne\Nova\Panel;
+namespace Igne\Nova\Localization;
 
 use Laravel\Nova\Events\ServingNova;
 use Laravel\Nova\Nova;

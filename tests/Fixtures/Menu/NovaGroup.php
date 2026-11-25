@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Igne\Nova\Tests\Fixtures\Menu;
 
 use Igne\Nova\Menu\Contracts\CollapsedByDefault;
-use Igne\Nova\Menu\Contracts\MenuGroup;
+use Igne\Nova\Menu\Contracts\NovaMenuGroup;
 
-enum NovaGroup: string implements CollapsedByDefault, MenuGroup
+enum NovaGroup: string implements CollapsedByDefault, NovaMenuGroup
 {
     case CONTENT = 'content';
     case USERS = 'users';

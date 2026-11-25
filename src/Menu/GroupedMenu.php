@@ -6,7 +6,9 @@ namespace Igne\Nova\Menu;
 
 use Igne\Nova\Menu\Contracts\CollapsedByDefault;
 use Igne\Nova\Menu\Contracts\HasMenuBadge;
-use Igne\Nova\Menu\Contracts\MenuGroup;
+use Igne\Nova\Menu\Contracts\HasMenuGroup;
+use Igne\Nova\Menu\Contracts\NovaMenuGroup;
+use Igne\Nova\Menu\Exceptions\MenuGroupException;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Cache\Repository as Cache;
@@ -20,10 +22,10 @@ use Laravel\Nova\Tools\Dashboard;
 
 /**
  * Builds Nova's sidebar: the dashboards, then a collapsable section per group
- * of the app's menu group enum, then the sections the app appends. The app
- * calls it from its own Nova::mainMenu() callback:
+ * of the app's {@see NovaMenuGroup} enum, then the sections the app appends.
+ * The app calls it from its own Nova::mainMenu() callback:
  *
- *     Nova::mainMenu(fn (Request $request): array => GroupedMenu::make($request, NovaGroup::class)->sections());
+ *     Nova::mainMenu(fn (Request $request): array => GroupedMenu::make($request)->sections());
  */
 final class GroupedMenu
 {
@@ -40,7 +42,7 @@ final class GroupedMenu
     private bool $withDashboards = true;
 
     /**
-     * @param  class-string<MenuGroup>  $groups
+     * @param  class-string<NovaMenuGroup>  $groups
      */
     private function __construct(
         private readonly Request $request,
@@ -49,16 +51,13 @@ final class GroupedMenu
         private readonly int $badgeTtl,
     ) {}
 
-    /**
-     * @param  class-string<MenuGroup>  $groups  the app's menu group enum
-     */
-    public static function make(Request $request, string $groups): self
+    public static function make(Request $request): self
     {
         $container = Container::getInstance();
 
         return new self(
             $request,
-            $groups,
+            $container->make(MenuGroupDiscovery::class)->enum(),
             $container->make(Cache::class),
             $container->make(Config::class)->integer('igne-nova.menu.badge_ttl', 300),
         );
@@ -152,19 +151,31 @@ final class GroupedMenu
     }
 
     /**
+     * A resource of another package can still join a group with Nova's string $group.
+     *
      * @param  class-string<NovaResource<Model>>  $resource
      */
-    private function groupOf(string $resource): MenuGroup
+    private function groupOf(string $resource): NovaMenuGroup
     {
         $groups = $this->groups;
 
-        return $groups::tryFrom((string) $resource::group()) ?? $groups::fallback();
+        if (! is_subclass_of($resource, HasMenuGroup::class)) {
+            return $groups::tryFrom((string) $resource::group()) ?? $groups::fallback();
+        }
+
+        $group = $resource::menuGroup();
+
+        if (! $group instanceof $groups) {
+            throw MenuGroupException::foreignGroup($resource, $group, $groups);
+        }
+
+        return $group;
     }
 
     /**
      * @param  array<int, MenuItem>  $items
      */
-    private function section(MenuGroup $group, array $items): MenuSection
+    private function section(NovaMenuGroup $group, array $items): MenuSection
     {
         $section = MenuSection::make($group->label(), $items)->icon($group->icon());
 
