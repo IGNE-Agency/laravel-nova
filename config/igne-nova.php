@@ -86,4 +86,19 @@ return [
         'lazy_images' => true,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Routes
+    |--------------------------------------------------------------------------
+    |
+    | The file with the app's own routes on Nova's path, relative to the app's
+    | base path. It is loaded when it exists; null turns this off. Publish a
+    | starting file with "php artisan vendor:publish --tag=igne-nova-routes".
+    |
+    */
+
+    'routes' => [
+        'file' => 'routes/admin.php',
+    ],
+
 ];

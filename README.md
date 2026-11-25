@@ -16,6 +16,7 @@ Every Nova project rebuilt the same pieces, each slightly differently: a grouped
 | Logo and brand colour from one hex colour or a full scale | Off | `brand`; see [Branding](docs/branding.md). |
 | The app's own Nova stylesheets and scripts | Off | `assets.styles`, `assets.scripts`; see [Assets](docs/assets.md). |
 | Lazy loading of the images Nova renders | On | `assets.lazy_images`; see [Assets](docs/assets.md). |
+| The app's own routes on Nova's path, from `routes/admin.php` | On when the file exists | `routes.file`; see [Routes](docs/routes.md). |
 | Ignore sorts on unknown columns instead of a SQL error | Off | `IgnoresUnknownSortColumns` on the base resource; see [Resource helpers](docs/resources.md). |
 | Resource labels from translations keyed by URI key | Off | `TranslatesLabels` on the base resource; see [Resource helpers](docs/resources.md). |
 | Badge field driven by an enum's labels and colours | Off | `EnumBadge::make()`; see [Fields and filters](docs/fields-and-filters.md). |
@@ -42,12 +43,19 @@ php artisan vendor:publish --tag=igne-nova-config
 php artisan vendor:publish --tag=igne-nova-lang
 ```
 
+Publish `routes/admin.php` to add the app's own routes on Nova's path:
+
+```bash
+php artisan vendor:publish --tag=igne-nova-routes
+```
+
 ## Documentation
 
 - [Main menu](docs/menu.md)
 - [Layout](docs/layout.md)
 - [Localization](docs/localization.md)
 - [Assets](docs/assets.md)
+- [Routes](docs/routes.md)
 - [Branding](docs/branding.md)
 - [Resource helpers](docs/resources.md)
 - [Fields and filters](docs/fields-and-filters.md)
