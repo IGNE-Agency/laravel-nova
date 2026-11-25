@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Igne\Nova\Branding\BrandColors;
+use Igne\Nova\Branding\BrandingServiceProvider;
 
 it('makes Nova\'s full primary scale from one hex colour, with the colour as shade 500', function (): void {
     $scale = BrandColors::scale('#18b69b');
@@ -29,7 +30,7 @@ it('rejects a colour that is not a six-digit hex colour', function (): void {
 it('fills Nova\'s brand settings from the package config', function (): void {
     config()->set('igne-nova.brand', ['logo' => '/path/logo.svg', 'color' => '#18b69b']);
 
-    $this->rebootPackage();
+    $this->rebootProvider(BrandingServiceProvider::class);
 
     expect(config('nova.brand.logo'))->toBe('/path/logo.svg')
         ->and(config('nova.brand.colors.500'))->toBe('24, 182, 155');
@@ -39,7 +40,7 @@ it('keeps the brand settings of the app\'s Nova config', function (): void {
     config()->set('nova.brand', ['logo' => '/app/logo.svg', 'colors' => ['500' => '1, 2, 3']]);
     config()->set('igne-nova.brand', ['logo' => '/path/logo.svg', 'color' => '#18b69b']);
 
-    $this->rebootPackage();
+    $this->rebootProvider(BrandingServiceProvider::class);
 
     expect(config('nova.brand'))->toBe(['logo' => '/app/logo.svg', 'colors' => ['500' => '1, 2, 3']]);
 });

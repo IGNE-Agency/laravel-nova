@@ -38,7 +38,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Panel
+    | Layout
     |--------------------------------------------------------------------------
     |
     | Breadcrumbs above every page, the path Nova opens after login (null
@@ -47,11 +47,11 @@ return [
     |
     */
 
-    'breadcrumbs' => true,
-
-    'initial_path' => null,
-
-    'footer' => true,
+    'layout' => [
+        'breadcrumbs' => true,
+        'initial_path' => null,
+        'footer' => true,
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -83,8 +83,7 @@ return [
     'assets' => [
         'styles' => [],
         'scripts' => [],
+        'lazy_images' => true,
     ],
-
-    'lazy_images' => true,
 
 ];
