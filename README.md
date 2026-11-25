@@ -16,6 +16,8 @@ Every Nova project rebuilt the same pieces, each slightly differently: a grouped
 | Logo and brand colour from one hex colour or a full scale | Off | `brand`; see [Branding](docs/branding.md). |
 | The app's own Nova stylesheets and scripts | Off | `assets.styles`, `assets.scripts`; see [Assets](docs/assets.md). |
 | Lazy loading of the images Nova renders | On | `assets.lazy_images`; see [Assets](docs/assets.md). |
+| Ignore sorts on unknown columns instead of a SQL error | Off | `IgnoresUnknownSortColumns` on the base resource; see [Resource helpers](docs/resources.md). |
+| Resource labels from translations keyed by URI key | Off | `TranslatesLabels` on the base resource; see [Resource helpers](docs/resources.md). |
 
 ## Requirements
 
@@ -43,4 +45,5 @@ php artisan vendor:publish --tag=igne-nova-lang
 - [Localization](docs/localization.md)
 - [Assets](docs/assets.md)
 - [Branding](docs/branding.md)
+- [Resource helpers](docs/resources.md)
 - [Development](docs/development.md)
