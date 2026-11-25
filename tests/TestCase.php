@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Igne\Nova\Tests;
 
 use Closure;
+use Igne\Nova\IgneNova;
 use Igne\Nova\IgneNovaServiceProvider;
 use Igne\Nova\Menu\GroupedMenu;
 use Igne\Nova\Tests\Fixtures\Nova\NovaServiceProvider;
@@ -44,6 +45,7 @@ abstract class TestCase extends Orchestra
     protected function tearDown(): void
     {
         Nova::flushState();
+        IgneNova::flushState();
 
         parent::tearDown();
     }
@@ -101,14 +103,43 @@ abstract class TestCase extends Orchestra
      */
     protected function serializedMenu(Closure $build, ?User $user = null): array
     {
-        $user ??= User::factory()->create();
-        $request = NovaRequest::create('/nova');
-        $request->setUserResolver(static fn (): User => $user);
-        $this->app->instance(NovaRequest::class, $request);
-        $this->actingAs($user);
-        event(new ServingNova($this->app, $request));
+        $request = $this->serveNova($user ?? User::factory()->create());
 
         /** @var list<array<string, mixed>> */
         return json_decode((string) json_encode($build($request)->sections()), true);
+    }
+
+    /**
+     * Boot one of the package's providers again, after the test changed its config.
+     *
+     * @param  class-string<ServiceProvider>  $provider
+     */
+    protected function rebootProvider(string $provider): void
+    {
+        $instance = $this->app->getProvider($provider);
+
+        if ($instance === null) {
+            throw new \LogicException(\sprintf('The provider [%s] is not registered.', $provider));
+        }
+
+        $this->app->call([$instance, 'boot']);
+    }
+
+    /**
+     * Dispatch Nova's serving event for a request by the user.
+     */
+    protected function serveNova(?User $user = null): NovaRequest
+    {
+        $request = NovaRequest::create('/nova');
+        $request->setUserResolver(static fn (): ?User => $user);
+        $this->app->instance(NovaRequest::class, $request);
+
+        if ($user !== null) {
+            $this->actingAs($user);
+        }
+
+        event(new ServingNova($this->app, $request));
+
+        return $request;
     }
 }
